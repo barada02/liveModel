@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+transformers
+datasets[audio]
+accelerate
+huggingface_hub
+voxcpm
+vllm>=0.8.5
+soundfile
+numpy
+python-multipart
