@@ -67,6 +67,18 @@ df -h
 
 We are not wiring ASR -> LLM -> TTS yet. Each service is tested independently.
 
+Important GPU note:
+1. vLLM can reserve most GPU VRAM by default.
+2. If you run all services together, TTS may fail with CUDA OOM.
+3. For phase-1, either run one heavy service at a time, or cap vLLM memory with `VLLM_GPU_MEMORY_UTILIZATION`.
+
+Example (cap vLLM to 55% VRAM):
+
+```bash
+export VLLM_GPU_MEMORY_UTILIZATION=0.55
+bash scripts/start_llm.sh
+```
+
 ### 1. Start the LLM service
 
 ```bash

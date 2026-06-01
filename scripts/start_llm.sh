@@ -6,6 +6,7 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 MODEL_DIR="$PROJECT_DIR/models/Qwen3-0.6B"
 LOG_DIR="$PROJECT_DIR/logs"
 LOG_FILE="$LOG_DIR/llm.$(date +%Y%m%d-%H%M%S).log"
+GPU_MEM_UTILIZATION="${VLLM_GPU_MEMORY_UTILIZATION:-0.55}"
 
 mkdir -p "$LOG_DIR"
 
@@ -16,6 +17,7 @@ if ! python3 -c "import vllm" >/dev/null 2>&1; then
 fi
 
 echo "Starting vLLM server with Qwen3-0.6B from $MODEL_DIR"
+echo "Using gpu-memory-utilization=$GPU_MEM_UTILIZATION"
 echo "Logging to $LOG_FILE"
 
 python3 -m vllm.entrypoints.openai.api_server \
@@ -23,4 +25,5 @@ python3 -m vllm.entrypoints.openai.api_server \
     --served-model-name qwen3 \
     --port 8000 \
     --max-model-len 8192 \
+    --gpu-memory-utilization "$GPU_MEM_UTILIZATION" \
     2>&1 | tee -a "$LOG_FILE"
