@@ -1,67 +1,148 @@
 # LiveModel - Real-Time AI Voice Interaction
 
-This is a microservices-based voice interaction system designed for Vast.ai GPU containers.
+This is a microservices-based voice interaction system designed for a Vast.ai Linux Desktop container.
 
-## 🚀 Lifecycle: Local -> GitHub -> Vast.ai
+## Recommended Vast.ai Template
 
-1. **Code Locally**: Edit `.py` files, configuration, and scripts in VS Code precisely as we are doing now.
-2. **Push to GitHub**:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial microservices setup"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/liveModel.git
-   git push -u origin main
-   ```
-3. **Deploy on Vast.ai**:
-   - Rent your container (see config below).
-   - Once connected via SSH or Jupyter terminal:
-     ```bash
-     git clone https://github.com/YOUR_USERNAME/liveModel.git
-     cd liveModel
-     pip install -r requirements.txt
-     pip install openai requests  # For the test scripts
-     python scripts/download_models.py
-     ```
+Use the **Linux Desktop** template for this project.
 
-## 🖥️ Recommended Vast.ai Setup
+Why this template fits:
+1. It gives you a full Linux desktop plus SSH and Jupyter terminal access.
+2. It supports root installs, so we can set up Python, model dependencies, and tools directly in the container.
+3. It uses Supervisor instead of systemd, which is fine for the first phase because we will run each service explicitly and capture logs ourselves.
+4. It exposes both a browser desktop and terminal access, which is useful while we are testing audio, GPU, and file handling.
 
-To maintain low latency while minimizing costs, configure your Vast.ai instance as follows:
+## Lifecycle
 
-*   **GPU**: 1x RTX 3090 or RTX 4090. (An RTX 3060/4060 will also work but generation TTFT might be slightly slower for Qwen).
-*   **Docker Image**: Use the official PyTorch or vLLM image. We recommend: `vllm/vllm-openai:latest` or `pytorch/pytorch:2.2.1-cuda12.1-cudnn8-devel`.
-*   **Disk Space**: Request at least **30GB - 40GB**. (Models are ~2.5GB combined, but PyTorch and CUDA dependencies will fill up space fast).
-*   **Bandwidth**: Pick a host with `> 500 Mbps` download speed to ensure `scripts/download_models.py` finishes quickly.
+1. Code locally in VS Code.
+2. Push to GitHub.
+3. Clone the repo inside the Vast.ai Linux Desktop container.
+4. Install dependencies and download model files into local storage.
+5. Start each service separately.
+6. Run one test script per service.
+7. Collect logs into files when anything fails.
 
-## 🧪 Testing the Pipeline
+## Local to GitHub
 
-Once inside your Vast.ai container, start the 3 services in separate terminal tabs (or using `tmux`/`screen`):
+You already know the Git commands, so the key rule is: keep the repository clean and only push the phase you want to test.
 
-**Terminal 1 (LLM API - Port 8000):**
+## Vast.ai Linux Desktop Startup
+
+Inside the Vast.ai container, use Linux commands like these:
+
 ```bash
-chmod +x scripts/start_llm.sh
-./scripts/start_llm.sh
+git clone https://github.com/YOUR_USERNAME/liveModel.git
+cd liveModel
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install openai requests
+
+python scripts/download_models.py
+mkdir -p logs
 ```
 
-**Terminal 2 (ASR API - Port 8001):**
+If you want a quick system check first:
+
+```bash
+nvidia-smi
+python --version
+which python
+df -h
+```
+
+## First Test Phase
+
+We are not wiring ASR -> LLM -> TTS yet. Each service is tested independently.
+
+### 1. Start the LLM service
+
+```bash
+bash scripts/start_llm.sh
+```
+
+Recommended check:
+
+```bash
+curl http://localhost:8000/v1/models
+```
+
+### 2. Start the ASR service
+
 ```bash
 python services/asr_service.py
 ```
 
-**Terminal 3 (TTS API - Port 8002):**
+Recommended check:
+
+```bash
+python tests/test_asr.py
+```
+
+### 3. Start the TTS service
+
 ```bash
 python services/tts_service.py
 ```
 
-**Terminal 4 (Run Tests):**
+Recommended check:
+
 ```bash
-# Test LLM
-python tests/test_llm.py
-
-# Test TTS
 python tests/test_tts.py
-
-# Test ASR (Ensure you create a dummy.wav first as noted in the file)
-python tests/test_asr.py
 ```
+
+### 4. Test the LLM directly
+
+```bash
+python tests/test_llm.py
+```
+
+## Log System
+
+Every service should write its stdout and stderr to a log file in `logs/`.
+
+Use this pattern when starting services:
+
+```bash
+mkdir -p logs
+
+# LLM
+bash scripts/start_llm.sh 2>&1 | tee -a logs/llm.log
+
+# ASR
+python services/asr_service.py 2>&1 | tee -a logs/asr.log
+
+# TTS
+python services/tts_service.py 2>&1 | tee -a logs/tts.log
+```
+
+If a service fails, bring back these files for analysis:
+
+```bash
+logs/llm.log
+logs/asr.log
+logs/tts.log
+```
+
+If you want a full timestamped capture of one run, use:
+
+```bash
+script -q -c "python services/asr_service.py" logs/asr.session.log
+```
+
+## Suggested Vast.ai Config
+
+For this phase, choose:
+
+1. Template: Linux Desktop.
+2. GPU: RTX 3090 or RTX 4090. A 3060 can work for testing, but the 3090/4090 gives more margin.
+3. Disk: At least 40 GB.
+4. Persistence: Prefer a persistent disk or reusable instance so the downloaded models are not lost between sessions.
+5. Access: Use SSH or Jupyter terminal for the testing phase, and keep the desktop open if you need audio tools.
+
+## Notes on Service Management
+
+This container uses Supervisor and not systemd. For our first phase, we do not need to build system services yet. We will run the three model services manually, capture logs, and only automate later if the tests are stable.

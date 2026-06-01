@@ -1,10 +1,16 @@
 #!/bin/bash
-# Start Qwen3-0.6B using vLLM for high-throughput OpenAI-compatible API
-# We serve it on port 8000
+set -euo pipefail
 
-MODEL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../models/Qwen3-0.6B" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+MODEL_DIR="$PROJECT_DIR/models/Qwen3-0.6B"
+LOG_DIR="$PROJECT_DIR/logs"
+LOG_FILE="$LOG_DIR/llm.$(date +%Y%m%d-%H%M%S).log"
+
+mkdir -p "$LOG_DIR"
 
 echo "Starting vLLM server with Qwen3-0.6B from $MODEL_DIR"
+echo "Logging to $LOG_FILE"
 
 python3 -m vllm.entrypoints.openai.api_server \
     --model "$MODEL_DIR" \
@@ -12,4 +18,5 @@ python3 -m vllm.entrypoints.openai.api_server \
     --port 8000 \
     --max-model-len 8192 \
     --enable-reasoning \
-    --reasoning-parser deepseek_r1
+    --reasoning-parser deepseek_r1 \
+    2>&1 | tee -a "$LOG_FILE"

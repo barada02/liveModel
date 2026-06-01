@@ -9,3 +9,5 @@ vllm>=0.8.5
 soundfile
 numpy
 python-multipart
+openai
+requests
