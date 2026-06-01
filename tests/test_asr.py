@@ -11,8 +11,18 @@ try:
         files = {"file": ("dummy.wav", f, "audio/wav")}
         print(f"Sending audio to ASR service at {url}...")
         response = requests.post(url, files=files)
-        
+
     print("Status Code:", response.status_code)
-    print("Response JSON:", response.json())
+    print("Content-Type:", response.headers.get("content-type", "<missing>"))
+
+    if response.status_code == 200:
+        try:
+            print("Response JSON:", response.json())
+        except ValueError:
+            print("Failed to decode JSON response:")
+            print(response.text)
+    else:
+        print("Response Body:")
+        print(response.text)
 except FileNotFoundError:
     print("Please create a 'dummy.wav' file in this directory to test ASR.")
