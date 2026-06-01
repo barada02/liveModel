@@ -12,6 +12,25 @@ Why this template fits:
 3. It uses Supervisor instead of systemd, which is fine for the first phase because we will run each service explicitly and capture logs ourselves.
 4. It exposes both a browser desktop and terminal access, which is useful while we are testing audio, GPU, and file handling.
 
+## Installation with uv
+
+This repository keeps the Python dependency list in `requirements.txt`. Use `uv` to create the virtual environment and install everything in one step.
+
+```bash
+git clone https://github.com/YOUR_USERNAME/liveModel.git
+cd liveModel
+
+uv venv
+source .venv/bin/activate
+
+uv pip install -r requirements.txt
+
+python scripts/download_models.py
+mkdir -p logs
+```
+
+If you are using a fresh Linux Desktop container, install vLLM only through `requirements.txt` and let `uv` resolve the full environment from that file.
+
 ## Lifecycle
 
 1. Code locally in VS Code.
@@ -28,31 +47,9 @@ You already know the Git commands, so the key rule is: keep the repository clean
 
 ## Vast.ai Linux Desktop Startup
 
-Inside the Vast.ai container, use Linux commands like these:
+After the `uv` setup above completes, you can verify the container and launch the services.
 
-```bash
-git clone https://github.com/YOUR_USERNAME/liveModel.git
-cd liveModel
-
-python3 -m venv .venv
-source .venv/bin/activate
-
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-pip install openai requests
-python -m pip install -U vllm
-
-python scripts/download_models.py
-mkdir -p logs
-```
-
-If you are using a fresh Linux Desktop container, install vLLM before starting the LLM service. The direct command is:
-
-```bash
-python -m pip install -U vllm
-```
-
-If that fails because of CUDA or wheel mismatch, keep the failure log and we can adjust the install version for that exact container image.
+If `vllm` fails because of CUDA or wheel mismatch, keep the failure log and we can adjust the version constraints in `requirements.txt` for that exact container image.
 
 If you want a quick system check first:
 
