@@ -40,10 +40,19 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 pip install openai requests
+python -m pip install -U vllm
 
 python scripts/download_models.py
 mkdir -p logs
 ```
+
+If you are using a fresh Linux Desktop container, install vLLM before starting the LLM service. The direct command is:
+
+```bash
+python -m pip install -U vllm
+```
+
+If that fails because of CUDA or wheel mismatch, keep the failure log and we can adjust the install version for that exact container image.
 
 If you want a quick system check first:
 

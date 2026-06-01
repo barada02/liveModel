@@ -9,6 +9,12 @@ LOG_FILE="$LOG_DIR/llm.$(date +%Y%m%d-%H%M%S).log"
 
 mkdir -p "$LOG_DIR"
 
+if ! python3 -c "import vllm" >/dev/null 2>&1; then
+    echo "vLLM is not installed in the current Python environment."
+    echo "Run: python -m pip install -U vllm"
+    exit 1
+fi
+
 echo "Starting vLLM server with Qwen3-0.6B from $MODEL_DIR"
 echo "Logging to $LOG_FILE"
 
