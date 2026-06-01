@@ -23,6 +23,4 @@ python3 -m vllm.entrypoints.openai.api_server \
     --served-model-name qwen3 \
     --port 8000 \
     --max-model-len 8192 \
-    --enable-reasoning \
-    --reasoning-parser deepseek_r1 \
     2>&1 | tee -a "$LOG_FILE"
