@@ -12,12 +12,17 @@ Why this template fits:
 3. It uses Supervisor instead of systemd, which is fine for the first phase because we will run each service explicitly and capture logs ourselves.
 4. It exposes both a browser desktop and terminal access, which is useful while we are testing audio, GPU, and file handling.
 
+## update git
+                 ~/li" 22:02 01-Jun-26
+git config --global user.name "Kumar"                                
+git config --global user.email "chandanbarada2@gmail.com"  
+
 ## Installation with uv
 
 This repository keeps the Python dependency list in `requirements.txt`. Use `uv` to create the virtual environment and install everything in one step.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/liveModel.git
+git clone https://github.com/barada02/liveModel.git
 cd liveModel
 
 uv venv
