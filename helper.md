@@ -14,7 +14,7 @@ ssh-keygen -t ed25519
 If the key already exists, print the public key so you can copy it:
 
 ```powershell
-cat ~/.ssh/id_ed25519.pub
+type .ssh\id_ed25519.pub
 ```
 
 Use the public key content in the Vast.ai SSH key field.
