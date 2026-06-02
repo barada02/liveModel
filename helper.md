@@ -56,6 +56,13 @@ Activate it:
 source .venv/bin/activate
 ```
 
+
+## update git
+```bash
+git config --global user.name "Kumar"                                
+git config --global user.email "chandanbarada2@gmail.com" 
+``` 
+
 ### 6. Install dependencies with uv
 
 Install the project requirements:

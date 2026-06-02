@@ -12,10 +12,7 @@ Why this template fits:
 3. It uses Supervisor instead of systemd, which is fine for the first phase because we will run each service explicitly and capture logs ourselves.
 4. It exposes both a browser desktop and terminal access, which is useful while we are testing audio, GPU, and file handling.
 
-## update git
-                 ~/li" 22:02 01-Jun-26
-git config --global user.name "Kumar"                                
-git config --global user.email "chandanbarada2@gmail.com"  
+
 
 ## Installation with uv
 
