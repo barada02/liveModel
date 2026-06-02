@@ -8,13 +8,13 @@ Follow these steps in order.
 If you do not already have an SSH key, create one on your laptop:
 
 ```powershell
-ssh-keygen -t ed25519 -C "chandanbarada2@gmail.com"
+ssh-keygen -t ed25519
 ```
 
 If the key already exists, print the public key so you can copy it:
 
 ```powershell
-Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub
+cat ~/.ssh/id_ed25519.pub
 ```
 
 Use the public key content in the Vast.ai SSH key field.
@@ -26,7 +26,7 @@ Choose the Linux Desktop template, then add your SSH public key to the instance.
 Copy the remote SSH link shown by Vast.ai. It usually looks like:
 
 ```bash
-ssh <user>@<host> -p <port>
+ssh -p 22305 root@ssh9.vast.ai -L 8080:localhost:8080
 ```
 
 ### 3. Connect from VS Code
