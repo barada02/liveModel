@@ -1,5 +1,9 @@
-oxCPM2
+oxCPM2 (Version 2.0)
+**Upgraded from VoxCPM 1.5 to VoxCPM 2.0** — Now supports instruction tone control for enhanced voice design!
+
 VoxCPM2 is a tokenizer-free, diffusion autoregressive Text-to-Speech model — 2B parameters, 30 languages, 48kHz audio output, trained on over 2 million hours of multilingual speech data.
+
+**New in 2.0:** Accepts instruction tone along with text for fine-grained control over voice characteristics including emotion, pace, and expression.
 
 GitHub Docs Demo Audio Samples Discord Lark
 
