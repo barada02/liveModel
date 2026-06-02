@@ -23,11 +23,11 @@ def download_models():
         local_dir=os.path.join(MODELS_DIR, "moonshine-base")
     )
     
-    # 3. Download VoxCPM1.5 (TTS)
-    print("\n--- Downloading VoxCPM1.5 ---")
+    # 3. Download VoxCPM2 (TTS) - Updated from VoxCPM1.5 with instruction tone support
+    print("\n--- Downloading VoxCPM2 ---")
     snapshot_download(
-        repo_id="openbmb/VoxCPM1.5",
-        local_dir=os.path.join(MODELS_DIR, "VoxCPM1.5")
+        repo_id="openbmb/VoxCPM2",
+        local_dir=os.path.join(MODELS_DIR, "VoxCPM2")
     )
 
     print("\nAll models downloaded successfully!")
